@@ -3,44 +3,55 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Product, User
-from .producer import publish
+from .producer import RMQProducer
 from .serializers import ProductSerializer
 import random
 
+producer = RMQProducer()
+
 
 class ProductViewSet(viewsets.ViewSet):
+
     def list(self, request):
         # /api/products
+        print("view_list *****************")
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
-        publish()
         return Response(serializer.data)
 
     def create(self, request):
         # /api/products
+        print("view_create *****************")
         serializer = ProductSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        producer.publish('product_created', serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
         # /api/products/<str:id>
+        print("view_retrieve *****************")
         product = Product.objects.get(id=pk)
         serializer = ProductSerializer(product)
         return Response(serializer.data)
 
     def update(self, request, pk=None):
         # /api/products/<str:id>
+        print("view_update *****************")
         product = Product.objects.get(id=pk)
         serializer = ProductSerializer(instance=product, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        #print(f"{product}, this is update function in view, {product}, {serializer.data}, {request.data}")
+        producer.publish('product_updated', serializer.data)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     def destroy(self, request, pk=None):
         # /api/products/<str:id>
+        print("view_destroy *****************")
         product = Product.objects.get(id=pk)
         product.delete()
+        producer.publish('product_deleted', pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

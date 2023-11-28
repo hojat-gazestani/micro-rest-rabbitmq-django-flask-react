@@ -25,7 +25,7 @@ SECRET_KEY = '#!_a&ik1gq_7@r#-2+pd^3=)g&k%+6z8z93-1zkhf&&@yh)gti'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -83,7 +83,7 @@ DATABASES = {
         'NAME': 'admin',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'admin_db',
+        'HOST': 'admin.db',
         'PORT': '3306',
 
         # 'ENGINE': 'django.db.backends.sqlite3',
@@ -132,3 +132,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')

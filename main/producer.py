@@ -18,7 +18,7 @@ class RMQProducer:
             )
             self.channel = self.connection.channel()
             # self.channel.queue_declare(queue='main')
-            self.channel.exchange_declare(exchange='ex_main', exchange_type='fanout')
+            self.channel.exchange_declare(exchange='ex_admin', exchange_type='fanout')
         except Exception as e:
             logger.error(f"Error establishing RabbitMQ connection: {str(e)}")
             raise
@@ -27,7 +27,7 @@ class RMQProducer:
         try:
             properties = pika.BasicProperties(method)
             # channel.basic_publish(exchange='', routing_key='main', body=json.dumps(body), properties=properties)
-            self.channel.basic_publish(exchange='ex_main', routing_key='', body=json.dumps(body), properties=properties)
+            self.channel.basic_publish(exchange='ex_admin', routing_key='', body=json.dumps(body), properties=properties)
             logger.info(f"{json.dumps(body)} Published")
         except Exception as e:
             logger.error(f"Error publishing message: {str(e)}")

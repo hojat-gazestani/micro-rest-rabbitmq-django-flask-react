@@ -1,18 +1,27 @@
 version: '3.8'
 services:
-  admin_backend:
+  admin.backend:
     build:
       context: ./admin
       dockerfile: Dockerfile
+    command: 'python manage.py runserver 0.0.0.0:8000'
     ports:
       - 8000:8000
     volumes:
       - ./admin:/app
     depends_on:
-      - admin_db
+      - admin.db
       - rabbitmq
 
-  admin_db:
+  admin.queue:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    command: 'python consumer.py'
+    depends_on:
+      - admin.db
+
+  admin.db:
     image: mysql:5.7.22
     restart: always
     environment:
@@ -25,19 +34,28 @@ services:
     ports:
       - 33066:3306
 
-  main_backend:
+  main.backend:
     build:
       context: ./main
       dockerfile: Dockerfile
+    command: 'python main.py'
     ports:
       - 8001:5000
     volumes:
       - ./main:/app
     depends_on:
-      - main_db
+      - main.db
       - rabbitmq
 
-  main_db:
+  main.queue:
+    build:
+      context: ./main
+      dockerfile: Dockerfile
+    command: 'python consumer.py'
+    depends_on:
+      - main.db
+
+  main.db:
     image: mysql:5.7.22
     restart: always
     environment:
