@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Wrapper from "./Wrapper";
 
 
-const ProductsCreate = () => {
+const ProductsEdit = () => {
     const [title, setTitle] = useState('');
     const [image, setImage] = useState('');
 
@@ -12,7 +12,7 @@ const ProductsCreate = () => {
         event.preventDefault();
 
         await fetch('http://localhost:8000/api/products/', {
-            method: 'POST',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 title,
@@ -50,4 +50,4 @@ const ProductsCreate = () => {
     );
 };
 
-export default ProductsCreate;
+export default ProductsEdit;
